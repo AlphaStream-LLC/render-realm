@@ -18,7 +18,7 @@ from pose2d_utils import (
 
 
 class SimpleOnnxInference(object):
-    def __init__(self, checkpoint, device='cuda', reverse_input=False, **kwargs):
+    def __init__(self, checkpoint, device='cuda' if torch.cuda.is_available() else 'cpu', reverse_input=False, **kwargs):
         if isinstance(device, str):
             device = torch.device(device)
         if device.type == 'cuda':
@@ -66,7 +66,7 @@ class SimpleOnnxInference(object):
 
 
 class Yolo(SimpleOnnxInference):
-    def __init__(self, checkpoint, device='cuda', threshold_conf=0.05, threshold_multi_persons=0.1, input_resolution=(640, 640), threshold_iou=0.5, threshold_bbox_shape_ratio=0.4, cat_id=[1], select_type='max', strict=True, sorted_func=None, **kwargs):
+    def __init__(self, checkpoint, device='cuda' if torch.cuda.is_available() else 'cpu', threshold_conf=0.05, threshold_multi_persons=0.1, input_resolution=(640, 640), threshold_iou=0.5, threshold_bbox_shape_ratio=0.4, cat_id=[1], select_type='max', strict=True, sorted_func=None, **kwargs):
         super(Yolo, self).__init__(checkpoint, device=device, **kwargs)
         
         model_inputs = self.session.get_inputs()
@@ -307,7 +307,7 @@ class Yolo(SimpleOnnxInference):
 
 
 class ViTPose(SimpleOnnxInference):
-    def __init__(self, checkpoint, device='cuda', **kwargs):
+    def __init__(self, checkpoint, device='cuda' if torch.cuda.is_available() else 'cpu', **kwargs):
         super(ViTPose, self).__init__(checkpoint, device=device)
 
     def forward(self, img, center, scale, **kwargs):
@@ -344,7 +344,7 @@ class ViTPose(SimpleOnnxInference):
 
 
 class Pose2d:
-    def __init__(self, checkpoint, detector_checkpoint=None, device='cuda', **kwargs):
+    def __init__(self, checkpoint, detector_checkpoint=None, device='cuda' if torch.cuda.is_available() else 'cpu', **kwargs):
 
         if detector_checkpoint is not None:
             self.detector = Yolo(detector_checkpoint, device)

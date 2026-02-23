@@ -25,12 +25,14 @@ dependencies = [
     "easydict",
     "ftfy",
     "imageio-ffmpeg",
-    "flash_attn",
     "numpy>=1.23.5,<2",
     "scipy"
 ]
 
-[project.optional-dependencies]
+cuda = [
+    "flash_attn"
+]
+
 dev = [
     "pytest",
     "black",

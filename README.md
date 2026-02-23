@@ -56,8 +56,9 @@ Install dependencies:
 # Ensure torch >= 2.4.0
 pip install -r requirements.txt
 ```
-Install [`flash_attn`](https://github.com/Dao-AILab/flash-attention):
+Install [`flash_attn`](https://github.com/Dao-AILab/flash-attention) (Optional, requires CUDA):
 ```sh
+# Skip this step on Mac or non-CUDA systems
 pip install flash-attn --no-build-isolation
 ```
 ### Model Download

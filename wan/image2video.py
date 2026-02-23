@@ -77,7 +77,7 @@ class WanI2V:
                 Convert DiT model parameters dtype to 'config.param_dtype'.
                 Only works without FSDP.
         """
-        self.device = torch.device(f"cuda:{device_id}")
+        self.device = torch.device(f"cuda:{device_id}") if torch.cuda.is_available() else torch.device("cpu")
         self.config = config
         self.rank = rank
         self.t5_cpu = t5_cpu
@@ -386,7 +386,7 @@ class WanI2V:
 
         # evaluation mode
         with (
-                torch.amp.autocast('cuda', dtype=self.param_dtype),
+                torch.amp.autocast('cuda' if torch.cuda.is_available() else 'cpu', dtype=self.param_dtype),
                 torch.no_grad(),
                 no_sync_low_noise(),
                 no_sync_high_noise(),

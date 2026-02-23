@@ -620,7 +620,7 @@ class Wan2_1_VAE:
                  z_dim=16,
                  vae_pth='cache/vae_step_411000.pth',
                  dtype=torch.float,
-                 device="cuda"):
+                 device="cuda" if torch.cuda.is_available() else "cpu"):
         self.dtype = dtype
         self.device = device
 

@@ -894,7 +894,7 @@ class Wan2_2_VAE:
         dim_mult=[1, 2, 4, 4],
         temperal_downsample=[False, True, True],
         dtype=torch.float,
-        device="cuda",
+        device="cuda" if torch.cuda.is_available() else "cpu",
     ):
 
         self.dtype = dtype

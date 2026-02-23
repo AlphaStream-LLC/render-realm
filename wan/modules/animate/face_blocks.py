@@ -70,12 +70,18 @@ def attention(
         x = F.scaled_dot_product_attention(q, k, v, attn_mask=attn_mask, dropout_p=drop_rate, is_causal=causal)
 
     elif mode == "flash":
-        x = flash_attn_func(
-            q,
-            k,
-            v,
-        )
-        x = x.view(batch_size, max_seqlen_q, x.shape[-2], x.shape[-1])  # reshape x to [b, s, a, d]
+        if flash_attn_func is not None:
+            x = flash_attn_func(
+                q,
+                k,
+                v,
+            )
+            x = x.view(batch_size, max_seqlen_q, x.shape[-2], x.shape[-1])  # reshape x to [b, s, a, d]
+        else:
+            # Fallback to torch SDPA if flash_attn is not available
+            if attn_mask is not None and attn_mask.dtype != torch.bool:
+                attn_mask = attn_mask.to(q.dtype)
+            x = F.scaled_dot_product_attention(q, k, v, attn_mask=attn_mask, dropout_p=drop_rate, is_causal=causal)
     elif mode == "vanilla":
         scale_factor = 1 / math.sqrt(q.size(-1))
 
